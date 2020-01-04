@@ -6,7 +6,8 @@
           <v-list-item-content>
             <v-list-item-title>
               <h1 class="menu-brand-text">
-                <img src="../assets/LogoSDAzul.png" class="brand-avatar" /> Spectrum
+                <img src="../assets/LogoSDAzul.png" class="brand-avatar" />
+                Spectrum
               </h1>
             </v-list-item-title>
           </v-list-item-content>
@@ -14,18 +15,46 @@
       </template>
 
       <v-divider></v-divider>
-      <template>
+      <v-list dense>
+        <v-list-group active-class="secondary--text">
+          <template v-slot:activator>
+            <v-list-item-avatar>
+              <img
+                v-if="user && user.profilePic"
+                :src="user.profilePic"
+                alt=""
+              />
+              <v-icon v-else large>fas fa-user-circle</v-icon>
+            </v-list-item-avatar>
+            <v-list-item-title>{{
+              user.name.first + " " + user.name.last
+            }}</v-list-item-title>
+          </template>
+          <v-list-item active-class="secondary" link>
+            <v-list-item-icon>
+              <v-icon>fas fa-cog</v-icon>
+            </v-list-item-icon>
+
+            <v-list-item-content>
+              <v-list-item-title>Account Settings</v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
+        </v-list-group>
+      </v-list>
+      <!-- <template>
         <v-list-item two-line>
           <v-list-item-avatar>
-            <img src="https://randomuser.me/api/portraits/women/81.jpg" />
+            <v-icon x-large>fas fa-user-circle</v-icon>
           </v-list-item-avatar>
 
           <v-list-item-content>
-            <v-list-item-title>Jane Smith</v-list-item-title>
+            <v-list-item-title>{{
+              user.name.first + " " + user.name.last
+            }}</v-list-item-title>
             <v-list-item-subtitle>Logged In</v-list-item-subtitle>
           </v-list-item-content>
         </v-list-item>
-      </template>
+      </template> -->
 
       <v-divider></v-divider>
 
@@ -48,7 +77,11 @@
             <v-list-item-title>Companies</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
-        <v-list-item :to="{ name: 'surveillance' }" active-class="secondary" link>
+        <v-list-item
+          :to="{ name: 'surveillance' }"
+          active-class="secondary"
+          link
+        >
           <v-list-item-icon>
             <v-icon>fas fa-shield-alt</v-icon>
           </v-list-item-icon>
@@ -59,20 +92,33 @@
         </v-list-item>
         <v-list-item :to="{ name: 'settings' }" active-class="secondary" link>
           <v-list-item-icon>
-            <v-icon>fas fa-cog</v-icon>
+            <v-icon>fas fa-cogs</v-icon>
           </v-list-item-icon>
 
           <v-list-item-content>
             <v-list-item-title>Settings</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
-        <v-list-item link>
-          <v-btn min-width="100%" class="secondary">Logout</v-btn>
-        </v-list-item>
       </v-list>
+      <template v-slot:append>
+        <div class="pa-2">
+          <v-btn class="secondary" block>Logout</v-btn>
+        </div>
+      </template>
     </v-navigation-drawer>
   </div>
 </template>
+
+<script>
+import { mapState } from "vuex";
+export default {
+  data: () => ({}),
+
+  computed: {
+    ...mapState(["user"])
+  }
+};
+</script>
 
 <style lang="scss">
 .menu {

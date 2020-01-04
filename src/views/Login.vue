@@ -8,7 +8,7 @@
             <v-spacer />
           </v-toolbar>
           <v-card-text class="mt-5">
-            <v-form>
+            <v-form ref="form" v-model="valid" lazy-validation>
               <v-text-field
                 outlined
                 dense
@@ -17,8 +17,7 @@
                 name="email"
                 prepend-icon="fas fa-at"
                 type="email"
-                :error="emailError.length"
-                :error-messages="emailError"
+                :rules="emailRules"
                 placeholder="Enter your email..."
               />
               <v-text-field
@@ -28,13 +27,14 @@
                 v-model="password"
                 label="Password"
                 name="password"
-                :error="passwordError.length"
-                :error-messages="passwordError"
+                :rules="passwordRules"
                 prepend-icon="fas fa-lock"
                 type="password"
                 placeholder="Enter your password..."
               />
             </v-form>
+            <h4 v-if="notFound">No user found</h4>
+            <h4 v-if="wrongPassword">The password is incorrect</h4>
           </v-card-text>
           <v-card-actions>
             <v-spacer />
@@ -51,39 +51,37 @@ import axios from "axios";
 
 export default {
   data: () => ({
+    valid: true,
     email: "",
     password: "",
-    emailError: "",
-    passwordError: ""
+    emailRules: [
+      el => !!el || "Email is required",
+      el => /.+@.+\..+/.test(el) || "Email must be valid"
+    ],
+    passwordRules: [el => !!el || "Password is required"],
+    notFound: false,
+    wrongPassword: false
   }),
   methods: {
     async login() {
-      this.checkFields();
-      if (!this.emailError && !this.passwordError) {
-        await axios
-          .post("/auth/login", {
-            email: this.email,
-            password: this.password
-          })
-          .then(data => console.log(data));
+      await this.validate();
+      if (this.valid) {
+        const res = await axios.post("/auth/login", {
+          email: this.email,
+          password: this.password
+        });
+
+        await this.$store.dispatch("setToken", res.data.content.jwt);
+        await this.$store.dispatch("setLoggedUser", res.data.content.user);
+
+        await localStorage.setItem("token", res.data.content.jwt);
+        this.$router.push({ name: "dashboard" });
       }
     },
-
-    // if (!this.emailError && !this.passwordError) {
-    //       await this.$store.dispatch("setToken", res.data.token);
-    //       await this.$store.dispatch("setLoggedUser", res.data.user);
-
-    //       localStorage.setItem("token", this.$store.state.token);
-    //       this.$router.push({ name: "dashboard" });
-    //     }
-    checkFields() {
-      this.email === ""
-        ? (this.emailError = "Email is required")
-        : (this.emailError = "");
-
-      this.password === ""
-        ? (this.passwordError = "Password is required")
-        : (this.passwordError = "");
+    validate() {
+      if (this.$refs.form.validate()) {
+        this.snackbar = true;
+      }
     }
   },
   computed: {}
