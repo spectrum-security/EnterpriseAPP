@@ -1,8 +1,6 @@
 <template>
   <v-app>
-    <v-content class="main">
-      <router-view></router-view>
-    </v-content>
+    <router-view></router-view>
   </v-app>
 </template>
 
@@ -82,5 +80,9 @@ export default {
 @import "@/assets/scss/index.scss";
 .main {
   background-color: #f2f2f2;
+}
+
+.v-content {
+  padding: 75px 0px 0px 260px !important;
 }
 </style>

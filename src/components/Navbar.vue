@@ -19,16 +19,14 @@
         <v-list-group active-class="secondary--text">
           <template v-slot:activator>
             <v-list-item-avatar>
-              <img
-                v-if="user && user.profilePic"
-                :src="user.profilePic"
-                alt=""
-              />
+              <img v-if="user && user.profilePic" :src="user.profilePic" alt />
               <v-icon v-else large>fas fa-user-circle</v-icon>
             </v-list-item-avatar>
-            <v-list-item-title>{{
+            <v-list-item-title v-if="user">
+              {{
               user.name.first + " " + user.name.last
-            }}</v-list-item-title>
+              }}
+            </v-list-item-title>
           </template>
           <v-list-item active-class="secondary" link>
             <v-list-item-icon>
@@ -54,7 +52,7 @@
             <v-list-item-subtitle>Logged In</v-list-item-subtitle>
           </v-list-item-content>
         </v-list-item>
-      </template> -->
+      </template>-->
 
       <v-divider></v-divider>
 
@@ -77,11 +75,7 @@
             <v-list-item-title>Companies</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
-        <v-list-item
-          :to="{ name: 'surveillance' }"
-          active-class="secondary"
-          link
-        >
+        <v-list-item :to="{ name: 'surveillance' }" active-class="secondary" link>
           <v-list-item-icon>
             <v-icon>fas fa-shield-alt</v-icon>
           </v-list-item-icon>
@@ -123,7 +117,7 @@ export default {
 <style lang="scss">
 .menu {
   background: linear-gradient(rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.8)),
-    url("https://demos.creative-tim.com/material-dashboard-pro/assets/img/sidebar-1.jpg");
+    url("../assets/menu-image.jpg");
   background-position: center center;
   background-size: cover;
 }

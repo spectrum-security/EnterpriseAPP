@@ -2,6 +2,11 @@
   <div class="home">
     <Navbar />
     <Toolbar title="Companies" />
+    <v-content>
+      <v-row>
+        <v-col></v-col>
+      </v-row>
+    </v-content>
   </div>
 </template>
 
