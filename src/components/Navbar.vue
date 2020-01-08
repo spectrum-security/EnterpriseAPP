@@ -96,7 +96,7 @@
       </v-list>
       <template v-slot:append>
         <div class="pa-2">
-          <v-btn class="secondary" block>Logout</v-btn>
+          <v-btn @click="logout" class="secondary" block>Logout</v-btn>
         </div>
       </template>
     </v-navigation-drawer>
@@ -105,9 +105,22 @@
 
 <script>
 import { mapState } from "vuex";
+import { clearJwt, clearUser } from "../utils/jwt";
+
 export default {
   data: () => ({}),
-
+  methods: {
+    logout() {
+      try {
+        clearUser();
+        clearJwt();
+        this.$store.dispatch("setIsAuthenticated", false);
+        this.$router.push({ name: "login" });
+      } catch (error) {
+        throw error;
+      }
+    }
+  },
   computed: {
     ...mapState(["user"])
   }

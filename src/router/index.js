@@ -6,6 +6,8 @@ import Settings from "../views/Settings.vue";
 import Companies from "../views/Companies.vue";
 import Login from "../views/Login.vue";
 
+// import store from "../store/index";
+
 Vue.use(VueRouter);
 
 const routes = [
@@ -17,7 +19,8 @@ const routes = [
   {
     path: "/dashboard",
     name: "dashboard",
-    component: Dashboard
+    component: Dashboard, 
+    requiresAuth: true
   },
   {
     path: "/companies",
@@ -47,5 +50,11 @@ const router = new VueRouter({
   routes,
   linkActiveClass: "is-active"
 });
+
+// router.beforeEach((to, from, next) => {
+//   console.log(store.state.isAuthenticated);
+//   if (!store.state.isAuthenticated) next("/login");
+//   else next();
+// });
 
 export default router;

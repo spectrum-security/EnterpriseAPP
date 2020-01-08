@@ -8,13 +8,16 @@ export default new Vuex.Store({
   plugins: [createPersistedState()],
   state: {
     token: null,
-    user: null
+    user: null,
+    isAuthenticated: false
   },
   mutations: {
     SET_LOGGED_USER(state, user) {
       state.user = user;
     },
-
+    SET_IS_AUTHENTICATED(state, isAuthenticated) {
+      state.isAuthenticated = isAuthenticated;
+    },
     SET_TOKEN(state, token) {
       state.token = token;
     }
@@ -23,7 +26,9 @@ export default new Vuex.Store({
     setLoggedUser({ commit }, user) {
       commit("SET_LOGGED_USER", user);
     },
-
+    setIsAuthenticated({ commit }, isAuthenticated) {
+      commit("SET_IS_AUTHENTICATED", isAuthenticated);
+    },
     setToken({ commit }, token) {
       commit("SET_TOKEN", token);
     }
