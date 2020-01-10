@@ -4,7 +4,7 @@
     <Toolbar title="Companies" />
     <v-content>
       <v-row>
-        <v-col></v-col>
+        <v-col><companyCards/></v-col>
       </v-row>
     </v-content>
   </div>
@@ -14,12 +14,14 @@
 // @ is an alias to /src
 import Navbar from "../components/Navbar";
 import Toolbar from "../components/Toolbar";
+import CompanyCards from "../components/CompanyCards"
 
 export default {
   name: "home",
   components: {
     Navbar,
-    Toolbar
+    Toolbar,
+    CompanyCards
   },
   methods: {}
 };
