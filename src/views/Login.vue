@@ -1,5 +1,5 @@
 <template>
-  <v-content>
+  <v-content class="login-content">
     <v-container class="fill-height" fluid>
       <v-row align="center" justify="center">
         <v-col class="hero-container" cols="7"></v-col>
@@ -111,7 +111,7 @@ export default {
 </script>
 
 <style lang="scss">
-.v-content {
+.login-content {
   padding: 0px 0px 0px 0px !important;
   margin: 0px !important;
   height: 100vh !important;

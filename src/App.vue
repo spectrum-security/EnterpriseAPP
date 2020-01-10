@@ -82,7 +82,7 @@ export default {
   background-color: #f2f2f2;
 }
 
-.v-content {
+.content {
   padding: 75px 0px 0px 260px !important;
 }
 </style>

@@ -1,0 +1,65 @@
+<template>
+  <div>
+    <v-card class="mt-4 mx-5">
+      <v-sheet
+        class="v-sheet--offset mx-auto"
+        color="secondary"
+        elevation="12"
+        max-width="calc(100% - 32px)"
+      >
+        <v-sparkline
+          :labels="labels"
+          auto-draw
+          stroke-linecap="round"
+          :value="value"
+          color="white"
+          line-width="2"
+          padding="16"
+          smooth
+        ></v-sparkline>
+      </v-sheet>
+
+      <v-card-text class="pt-0">
+        <div class="title font-weight-light mb-2">{{ title }}</div>
+        <div class="subheading font-weight-light grey--text">
+          {{ subheading }}
+        </div>
+        <v-divider class="my-2"></v-divider>
+        <v-icon class="mr-2" small>fas fa-clock</v-icon>
+        <span class="caption grey--text font-weight-light"
+          >last registration 26 minutes ago</span
+        >
+      </v-card-text>
+    </v-card>
+  </div>
+</template>
+
+<script>
+export default {
+  props: {
+    title: {
+      type: String
+    },
+    subheading: {
+      type: String
+    },
+    labels: {
+      type: Array
+    },
+    value: {
+      type: Array
+    }
+  },
+  data: () => ({}),
+  mounted() {
+    console.log(this.labels);
+  }
+};
+</script>
+
+<style>
+.v-sheet--offset {
+  top: -24px;
+  position: relative;
+}
+</style>

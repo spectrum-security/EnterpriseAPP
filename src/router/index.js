@@ -5,8 +5,7 @@ import Surveillance from "../views/Surveillance.vue";
 import Settings from "../views/Settings.vue";
 import Companies from "../views/Companies.vue";
 import Login from "../views/Login.vue";
-
-// import store from "../store/index";
+import Users from "../views/Users.vue";
 
 Vue.use(VueRouter);
 
@@ -19,28 +18,47 @@ const routes = [
   {
     path: "/dashboard",
     name: "dashboard",
-    component: Dashboard, 
-    requiresAuth: true
+    component: Dashboard,
+    meta: {
+      requiresAuth: true,
+      isAdmin: true
+    }
   },
   {
     path: "/companies",
     name: "companies",
-    component: Companies
+    component: Companies,
+    meta: {
+      requiresAuth: true,
+      isAdmin: true
+    }
   },
   {
     path: "/surveillance",
     name: "surveillance",
-    component: Surveillance
+    component: Surveillance,
+    meta: {
+      requiresAuth: true,
+      isAdmin: true
+    }
+  },
+  {
+    path: "/users",
+    name: "users",
+    component: Users,
+    meta: {
+      requiresAuth: true,
+      isAdmin: true
+    }
   },
   {
     path: "/settings",
     name: "settings",
-    component: Settings
-  },
-  {
-    path: "*",
-    name: "dashboard",
-    component: Dashboard
+    component: Settings,
+    meta: {
+      requiresAuth: true,
+      isAdmin: true
+    }
   }
 ];
 
@@ -50,11 +68,5 @@ const router = new VueRouter({
   routes,
   linkActiveClass: "is-active"
 });
-
-// router.beforeEach((to, from, next) => {
-//   console.log(store.state.isAuthenticated);
-//   if (!store.state.isAuthenticated) next("/login");
-//   else next();
-// });
 
 export default router;
