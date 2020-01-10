@@ -1,5 +1,5 @@
 <template>
-  <v-content>
+  <v-content class="login-content">
     <v-container class="fill-height" fluid>
       <v-row align="center" justify="center">
         <v-col class="hero-container" cols="7"></v-col>
@@ -7,7 +7,7 @@
           <v-row align="center" justify="center">
             <v-col class="text-center" cols="8">
               <h1 class="primary--text mb-10">Login</h1>
-              <v-form ref="form" v-model="valid" lazy-validation>
+              <v-form ref="form" @submit.prevent="login" v-model="valid" lazy-validation>
                 <v-text-field
                   outlined
                   validate-on-blur
@@ -34,14 +34,20 @@
                 <p
                   v-if="resError.length"
                   rounded
-                  class="error white--text text-center mb-5"
+                  class="error--text text-center mb-5"
                 >{{ resError }}</p>
                 <v-row align="center" justify="center">
                   <v-col cols="6">
                     <a>Forgot your password?</a>
                   </v-col>
                   <v-col cols="6">
-                    <v-btn width="100%" color="primary" :loading="loading" @click="login">Login</v-btn>
+                    <v-btn
+                      type="submit"
+                      width="100%"
+                      color="primary"
+                      :loading="loading"
+                      @click="login"
+                    >Login</v-btn>
                   </v-col>
                 </v-row>
               </v-form>
@@ -83,6 +89,7 @@ export default {
           .then(res => {
             this.$store.dispatch("setToken", res.data.content.jwt);
             this.$store.dispatch("setLoggedUser", res.data.content.user);
+            this.$store.dispatch("setIsAuthenticated", true);
             this.loading = false;
             this.$router.push({ name: "dashboard" });
           })
@@ -104,7 +111,7 @@ export default {
 </script>
 
 <style lang="scss">
-.v-content {
+.login-content {
   padding: 0px 0px 0px 0px !important;
   margin: 0px !important;
   height: 100vh !important;
@@ -122,7 +129,12 @@ export default {
 
 .hero-container {
   height: 100vh;
-  background: linear-gradient(to right bottom, #1374f2, #66a3f2);
+  // background: linear-gradient(to right bottom, #1374f2, #66a3f2);
+  background-image: url("../assets/bg-login.jpg");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 100%;
+  background-color: black;
 }
 // .login-container {
 //   padding: 0 !important;

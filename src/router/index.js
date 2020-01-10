@@ -5,6 +5,7 @@ import Surveillance from "../views/Surveillance.vue";
 import Settings from "../views/Settings.vue";
 import Companies from "../views/Companies.vue";
 import Login from "../views/Login.vue";
+import Users from "../views/Users.vue";
 
 Vue.use(VueRouter);
 
@@ -17,27 +18,47 @@ const routes = [
   {
     path: "/dashboard",
     name: "dashboard",
-    component: Dashboard
+    component: Dashboard,
+    meta: {
+      requiresAuth: true,
+      isAdmin: true
+    }
   },
   {
     path: "/companies",
     name: "companies",
-    component: Companies
+    component: Companies,
+    meta: {
+      requiresAuth: true,
+      isAdmin: true
+    }
   },
   {
     path: "/surveillance",
     name: "surveillance",
-    component: Surveillance
+    component: Surveillance,
+    meta: {
+      requiresAuth: true,
+      isAdmin: true
+    }
+  },
+  {
+    path: "/users",
+    name: "users",
+    component: Users,
+    meta: {
+      requiresAuth: true,
+      isAdmin: true
+    }
   },
   {
     path: "/settings",
     name: "settings",
-    component: Settings
-  },
-  {
-    path: "*",
-    name: "dashboard",
-    component: Dashboard
+    component: Settings,
+    meta: {
+      requiresAuth: true,
+      isAdmin: true
+    }
   }
 ];
 

@@ -84,6 +84,17 @@
             <v-list-item-title>Surveillance</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
+
+        <v-list-item :to="{ name: 'users' }" active-class="secondary" link>
+          <v-list-item-icon>
+            <v-icon>fas fa-users</v-icon>
+          </v-list-item-icon>
+
+          <v-list-item-content>
+            <v-list-item-title>Users</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+
         <v-list-item :to="{ name: 'settings' }" active-class="secondary" link>
           <v-list-item-icon>
             <v-icon>fas fa-cogs</v-icon>
@@ -96,7 +107,7 @@
       </v-list>
       <template v-slot:append>
         <div class="pa-2">
-          <v-btn class="secondary" block>Logout</v-btn>
+          <v-btn @click="logout" class="secondary" block>Logout</v-btn>
         </div>
       </template>
     </v-navigation-drawer>
@@ -105,9 +116,22 @@
 
 <script>
 import { mapState } from "vuex";
+import { clearJwt, clearUser } from "../utils/jwt";
+
 export default {
   data: () => ({}),
-
+  methods: {
+    logout() {
+      try {
+        clearUser();
+        clearJwt();
+        this.$store.dispatch("setIsAuthenticated", false);
+        this.$router.push({ name: "login" });
+      } catch (error) {
+        throw error;
+      }
+    }
+  },
   computed: {
     ...mapState(["user"])
   }
