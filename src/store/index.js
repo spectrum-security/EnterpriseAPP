@@ -9,7 +9,8 @@ export default new Vuex.Store({
   state: {
     token: "",
     user: {},
-    isAuthenticated: false
+    isAuthenticated: false,
+    users: []
   },
   mutations: {
     SET_LOGGED_USER(state, user) {
@@ -20,6 +21,9 @@ export default new Vuex.Store({
     },
     SET_TOKEN(state, token) {
       state.token = token;
+    },
+    SET_USERS(state, users) {
+      state.users = users;
     }
   },
   actions: {
@@ -31,6 +35,9 @@ export default new Vuex.Store({
     },
     setToken({ commit }, token) {
       commit("SET_TOKEN", token);
+    },
+    setUsers({ commit }, users) {
+      commit("SET_USERS", users);
     }
   },
   modules: {}

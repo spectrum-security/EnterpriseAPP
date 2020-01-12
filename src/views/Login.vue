@@ -82,19 +82,21 @@ export default {
       await this.validate();
       if (this.valid) {
         await axios
-          .post("/auth/login", {
+          .post("/auth/admin_login", {
             email: this.email,
             password: this.password
           })
           .then(res => {
-            this.$store.dispatch("setToken", res.data.content.jwt);
-            this.$store.dispatch("setLoggedUser", res.data.content.user);
-            this.$store.dispatch("setIsAuthenticated", true);
-            this.loading = false;
-            this.$router.push({ name: "dashboard" });
+            if (res.data.content.user.userType === 1) {
+              this.$store.dispatch("setToken", res.data.content.jwt);
+              this.$store.dispatch("setLoggedUser", res.data.content.user);
+              this.$store.dispatch("setIsAuthenticated", true);
+              this.loading = false;
+              this.$router.push({ name: "dashboard" });
+            }
           })
           .catch(err => {
-            this.resError = err.response.data.message.pt;
+            this.resError = err.response.data.message.en;
             this.loading = false;
           });
       }
@@ -136,17 +138,4 @@ export default {
   background-size: 100%;
   background-color: black;
 }
-// .login-container {
-//   padding: 0 !important;
-// }
-
-// #left-hero {
-//   background: linear-gradient(to bottom right, #1374f2, #66a3f2);
-//   height: 100vh;
-// }
-
-// .hero-shield {
-//   box-shadow: -12px -12px 12px 0 rgba($color: white, $alpha: 1),
-//     -12px -12px 12px 0 rgba($color: black, $alpha: 0.03);
-// }
 </style>
