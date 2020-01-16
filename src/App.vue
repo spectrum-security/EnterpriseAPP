@@ -66,7 +66,7 @@ export default {
     }
   },
   computed: {},
-  async mounted() {
+  async beforeMount() {
     try {
       await this.initAuth();
     } catch (error) {
@@ -78,8 +78,8 @@ export default {
 
 <style lang="scss">
 @import "@/assets/scss/index.scss";
-.main {
-  background-color: #f2f2f2;
+.v-application {
+  background-color: #e3e8ee !important;
 }
 
 .content {
