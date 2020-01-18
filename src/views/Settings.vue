@@ -1,7 +1,5 @@
 <template>
   <div class="home">
-    <Navbar />
-    <Toolbar title="Settings" />
     <v-content class="content">
       <v-container>
         <v-tabs class="elevation-2" v-model="tabs" color="primary" background-color="white" left>
@@ -14,7 +12,6 @@
             <v-icon class="ml-3">fas fa-credit-card</v-icon>
           </v-tab>
         </v-tabs>
-
         <v-tabs-items class="elevation-2" v-model="tabs">
           <v-tab-item>
             <v-row align="center" no-gutters class="mb-0 pb-0">
@@ -25,7 +22,6 @@
                 <v-btn color="primary--text" @click="handleOpenDialog">New Template</v-btn>
               </v-col>
             </v-row>
-
             <v-row>
               <v-col cols="12" sm="12" md="12">
                 <Table
@@ -34,10 +30,13 @@
                   :items="templates"
                   :loading="loading"
                   :isUsersTable="false"
+                  :isEmailTable="true"
                   :page="page"
                   :perPage="perPage"
                   :totalRecords="totalRecords"
                   searchLabel="Search Templates"
+                  @openDeleteConfirm="openDialog($event)"
+                  @openFullscreen="handleOpenDialog($event)"
                   @search="searchTemplates($event)"
                   @pageUpdate="pageUpdate($event)"
                   @perPageUpdate="perPageUpdate($event)"
@@ -54,7 +53,8 @@
         </v-tabs-items>
       </v-container>
       <Full-Dialog
-        :open="openDialog"
+        :open="fullscreenDialog"
+        :route="routeForFullscreen"
         :editorData="editorData"
         :templateTitle="editEmailTitle"
         :templateType="editEmailType"
@@ -64,40 +64,56 @@
         @closeDialog="closeDialog"
         @save="saveTemplate($event)"
       />
+      <Confirm-Dialog
+        @confirmDelete="deleteItem(item)"
+        @dialogClose="dialogOpen = false"
+        :dialogOpen="dialogOpen"
+        :dialogHeadline="dialogHeadline"
+        :dialogText="dialogText"
+        :loading="loadingDelete"
+      />
+      <Snackbar
+        :open="snackbarOpen"
+        :text="snackbarText"
+        color="primary"
+        @closeSnack="snackbarOpen = event"
+      />
     </v-content>
   </div>
 </template>
 <script>
 // @ is an alias to /src
 import axios from "axios";
-import Navbar from "../components/Navbar";
-import Toolbar from "../components/Toolbar";
 import Table from "../components/DataTable";
 import FullDialog from "../components/FullDialog";
+import ConfirmDialog from "../components/ConfirmDialog";
+import Snackbar from "../components/Snackbar";
 
 export default {
   name: "home",
   components: {
-    Navbar,
-    Toolbar,
     Table,
-    FullDialog
+    FullDialog,
+    ConfirmDialog,
+    Snackbar
   },
   data: () => ({
     headers: [
       { text: "Template Title", value: "title" },
+      { text: "Type", value: "type" },
       { text: "Actions", value: "action", sortable: false }
     ],
     templates: [],
     loading: false,
     loadingSave: false,
+    loadingDelete: false,
     totalRecords: null,
     page: 1,
     perPage: 10,
     orderBy: "title",
     orderType: "asc",
     tabs: null,
-    openDialog: false,
+    fullscreenDialog: false,
     types: [],
     editorData: "",
     editEmailTitle: "",
@@ -105,38 +121,54 @@ export default {
       value: null,
       label: "",
       key: null
+    },
+    snackbarOpen: false,
+    snackbarText: "",
+    dialogHeadline: "",
+    dialogText: "",
+    dialogOpen: false,
+    routeForFullscreen: {
+      endpoint: "",
+      method: ""
     }
   }),
   methods: {
-    async handleOpenDialog() {
+    async handleOpenDialog(item) {
       try {
         if (!this.types.length) {
           const res = await axios.get("/mail/types");
           this.types = res.data.content.types;
-          this.openDialog = true;
+        }
+        if (item) {
+          this.editorData = item.content;
+          this.editEmailTitle = item.title;
+          this.editEmailType = item.type;
+          this.routeForFullscreen.endpoint = `/mail/update/${item._id}`;
+          this.routeForFullscreen.method = "put";
+          this.fullscreenDialog = true;
           return;
         }
-        this.openDialog = true;
+        this.routeForFullscreen.endpoint = `/mail/add`;
+        this.routeForFullscreen.method = "post";
+        this.fullscreenDialog = true;
       } catch (err) {
         throw err.message;
       }
     },
-    async saveTemplate(template) {
-      console.log(template);
+    async searchTemplates(searchText) {
       try {
-        this.loadingSave = true;
-        await axios.post("/mail/add", {
-          title: template.templateTitle,
-          type: template.templateType,
-          content: template.editorData
+        this.loading = true;
+        const res = await axios.get("/mail", {
+          params: {
+            search: searchText
+          }
         });
-
-        // do more stuff here
-        //
-
-        this.loadingSave = false;
-      } catch (error) {
-        throw error.message;
+        this.templates = res.data.content.templates;
+        this.totalRecords = res.data.totalRecords;
+        this.loading = false;
+      } catch (err) {
+        this.loading = false;
+        throw err;
       }
     },
     async getTemplates() {
@@ -144,8 +176,7 @@ export default {
         this.loading = true;
         const res = await axios.get("/mail/");
         this.templates = res.data.content.templates;
-        this.totalRecords = res.data.totalRecords;
-        console.log(this.templates);
+        this.totalRecords = res.data.totalTemplates;
         this.loading = false;
         return;
       } catch (err) {
@@ -153,8 +184,31 @@ export default {
         throw err.message;
       }
     },
+    openDialog(item) {
+      this.item = item;
+      this.dialogOpen = true;
+      this.dialogHeadline = "You are about to delete a template!";
+      this.dialogText = `Are you sure you want to delete the template '${item.title}'?`;
+    },
+    async deleteItem(item) {
+      console.log(item);
+      try {
+        this.loadingDelete = true;
+        const res = await axios.delete(`/mail/delete/${item._id}`);
+
+        if (res.data.success) {
+          this.dialogOpen = false;
+          const index = this.templates.indexOf(item);
+          this.templates.splice(index, 1);
+          this.snackbarText = `User ${item.name.first} ${item.name.last} deleted`;
+          this.snackbarOpen = true;
+        }
+      } catch (error) {
+        throw error;
+      }
+    },
     closeDialog() {
-      this.openDialog = false;
+      this.fullscreenDialog = false;
     }
   },
   computed: {},

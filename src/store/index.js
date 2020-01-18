@@ -40,5 +40,10 @@ export default new Vuex.Store({
       commit("SET_USERS", users);
     }
   },
+  getters: {
+    isAuthenticated: state => {
+      return state.isAuthenticated;
+    }
+  },
   modules: {}
 });
