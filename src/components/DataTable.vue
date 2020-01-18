@@ -74,6 +74,7 @@
       :open="userDialog"
       :editedItem="editedItem"
       :companies="companiesForDialog"
+      @getUsersBecauseLazy="easterEggMethod()"
       @close="close"
       max-width="500px"
     />
@@ -138,6 +139,10 @@ export default {
     }
   }),
   methods: {
+    easterEggMethod() {
+      this.userDialog = false;
+      this.$emit("legoLazyness");
+    },
     editItem(item) {
       this.dialogTitle = "Edit User";
       this.editedIndex = this.items.indexOf(item);

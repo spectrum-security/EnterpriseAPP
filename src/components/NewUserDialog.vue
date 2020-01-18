@@ -59,7 +59,7 @@
                 prepend-inner-icon="fas fa-camera"
                 prepend-icon
                 accept="image/jpeg, image/png"
-                v-model="editedItem.avatar"
+                v-model="avatar"
                 label="Avatar"
               ></v-file-input>
             </v-col>
@@ -69,7 +69,7 @@
       <v-card-actions>
         <v-spacer></v-spacer>
         <v-btn color="ligthgrey" text @click="$emit('close')">Cancel</v-btn>
-        <v-btn color="primary" text @click="save">Save</v-btn>
+        <v-btn color="primary" :loading="loading" text @click="save">Save</v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>
@@ -89,19 +89,18 @@ export default {
     userTypes: [
       { value: 1, label: "Admin" },
       { value: 3, label: "Customer" }
-    ]
+    ],
+    avatar: null,
+    loading: false
   }),
   methods: {
     async save() {
       try {
+        this.loading = true;
         let uploadRes = null;
-        if (this.editedItem.avatar) {
+        if (this.avatar) {
           const fd = new FormData();
-          fd.append(
-            "file",
-            this.editedItem.avatar,
-            this.editedItem.avatar.name
-          );
+          fd.append("file", this.avatar, this.avatar.name);
           uploadRes = await axios.post("/file/upload/avatar", fd);
         }
         const method = this.route.method;
@@ -116,9 +115,9 @@ export default {
           avatar: uploadRes.data.fileId
         });
         if (res.data.success) {
-          this.open = false;
-          this.$emit("snackbarOpen", this.editedItem);
+          this.$emit("getUsersBecauseLazy");
         }
+        this.loading = false;
       } catch (error) {
         throw error;
       }

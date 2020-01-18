@@ -19,7 +19,7 @@
       <template>
         <v-list-item two-line>
           <v-list-item-avatar>
-            <v-img :src="avatarSrc" alt></v-img>
+            <v-img v-if="user" :src="avatarSrc" :key="user.avatar" alt></v-img>
           </v-list-item-avatar>
 
           <v-list-item-content>

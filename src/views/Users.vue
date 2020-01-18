@@ -13,6 +13,7 @@
           :perPage="perPage"
           :totalRecords="totalUsers"
           searchLabel="Search Users"
+          @legoLazyness="getUsers()"
           @snackbarOpen="openSnackbar($event)"
           @openDeleteConfirm="openDialog($event)"
           @search="searchUsers($event)"
