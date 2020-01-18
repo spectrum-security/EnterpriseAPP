@@ -12,52 +12,55 @@ Vue.use(VueRouter);
 const routes = [
   {
     path: "/login",
-    name: "login",
-    component: Login
+    name: "Login",
+    component: Login,
+    meta: {
+      title: "Login"
+    }
   },
   {
-    path: "/dashboard",
-    name: "dashboard",
+    path: "/",
+    name: "Dashboard",
     component: Dashboard,
     meta: {
       requiresAuth: true,
-      isAdmin: true
+      title: "Dashboard"
     }
   },
   {
     path: "/companies",
-    name: "companies",
+    name: "Companies",
     component: Companies,
     meta: {
       requiresAuth: true,
-      isAdmin: true
+      title: "Companies"
     }
   },
   {
     path: "/surveillance",
-    name: "surveillance",
+    name: "Surveillance",
     component: Surveillance,
     meta: {
       requiresAuth: true,
-      isAdmin: true
+      title: "Surveillance"
     }
   },
   {
     path: "/users",
-    name: "users",
+    name: "Users",
     component: Users,
     meta: {
       requiresAuth: true,
-      isAdmin: true
+      title: "Users"
     }
   },
   {
     path: "/settings",
-    name: "settings",
+    name: "Settings",
     component: Settings,
     meta: {
       requiresAuth: true,
-      isAdmin: true
+      title: "Settings"
     }
   }
 ];
@@ -67,6 +70,28 @@ const router = new VueRouter({
   base: process.env.BASE_URL,
   routes,
   linkActiveClass: "is-active"
+});
+
+router.beforeEach((to, from, next) => {
+  if (to.matched.some(record => record.meta.requiresAuth)) {
+    // this route requires auth, check if logged in
+    // if not, redirect to login page.
+    if (!router.app.$store.getters.isAuthenticated) {
+      next({
+        path: "/login",
+        query: { redirect: to.fullPath }
+      });
+    } else {
+      next();
+    }
+  } else {
+    next(); // make sure to always call next()!
+  }
+});
+
+router.beforeEach((to, from, next) => {
+  document.title = "Spectrum - " + to.meta.title;
+  next();
 });
 
 export default router;

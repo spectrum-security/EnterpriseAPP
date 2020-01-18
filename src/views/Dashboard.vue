@@ -1,7 +1,5 @@
 <template>
   <div class="home">
-    <Navbar />
-    <Toolbar title="Dashboard" />
     <v-content class="content">
       <v-container>
         <v-row>
@@ -61,8 +59,6 @@
 
 <script>
 // @ is an alias to /src
-import Navbar from "../components/Navbar";
-import Toolbar from "../components/Toolbar";
 import Graph from "../components/Graph";
 import InfoCard from "../components/InfoCard";
 import axios from "axios";
@@ -70,15 +66,13 @@ import axios from "axios";
 export default {
   name: "home",
   components: {
-    Navbar,
-    Toolbar,
     Graph,
     InfoCard
   },
   data: () => ({
     loading: false,
     dateLabels: [],
-    logValues: [0, 2, 4, 6, 0, 5, 2],
+    logValues: [],
     logsIcon: {
       name: "fas fa-shield-alt",
       color: "white"
@@ -97,6 +91,7 @@ export default {
     // await this.getActiveSensors();
     await this.getThisWeeksLogs();
     // await this.getProfits;
+    await this.getLogChartData();
     this.loading = false;
   },
   methods: {
@@ -112,6 +107,15 @@ export default {
       try {
         const res = await axios.get("/logs/last_7_days");
         this.logsCount = res.data.totalRecords;
+      } catch (error) {
+        throw error;
+      }
+    },
+    async getLogChartData() {
+      try {
+        const res = await axios.get("/logs/analytics");
+        this.logValues = res.data.content.range;
+        this.lastLogRecord = res.data.content.lastRecord;
       } catch (error) {
         throw error;
       }

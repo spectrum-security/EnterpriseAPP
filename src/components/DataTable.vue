@@ -15,7 +15,7 @@
       @update:sort-desc="event => $emit('orderTypeUpdate', event)"
     >
       <template v-slot:top>
-        <v-toolbar flat color="primary">
+        <v-toolbar flat class="bg-gradient">
           <v-toolbar-title class="white--text">{{ title }}</v-toolbar-title>
           <v-form @submit.prevent="$emit('search', searchText)">
             <v-text-field
@@ -34,28 +34,42 @@
         </v-toolbar>
       </template>
       <template v-slot:item.action="{ item }">
-        <v-icon small color="secondary" class="mr-2" @click="editItem(item)">fas fa-user-edit</v-icon>
-        <v-icon small color="error" @click="openDialog(item)">fas fa-trash</v-icon>
+        <v-icon
+          small
+          color="secondary"
+          v-if="isUsersTable"
+          class="mr-2"
+          @click="editItem(item)"
+        >fas fa-user-edit</v-icon>
+        <v-icon
+          small
+          color="secondary"
+          v-if="isEmailTable"
+          class="mr-2"
+          @click="$emit('openFullscreen',item)"
+        >fas fa-edit</v-icon>
+        <v-icon small color="error" @click="$emit('openDeleteConfirm', item)">fas fa-trash</v-icon>
       </template>
       <template v-slot:no-data>
         <p class="accent--text">No Data returned</p>
       </template>
+      <template v-slot:item.type="{ item }">
+        <span v-if="item.type === 1">Payment Processed</span>
+        <span v-if="item.type === 2">Receipt</span>
+        <span v-if="item.type === 3">Maintenance Notice</span>
+        <span v-if="item.type === 4">Your Credentials</span>
+      </template>
+      <template v-slot:item.userType="{ item }">
+        <span v-if="item.userType === 1">Admin</span>
+        <span v-if="item.userType === 3">Customer</span>
+      </template>
+      <template v-slot:item.companyId.name="{item}">
+        <span v-if="item.companyId === undefined">Spectrum</span>
+        <span v-else>{{item.companyId.name}}</span>
+      </template>
     </v-data-table>
-    <Snackbar
-      :open="snackbarOpen"
-      :text="snackbarText"
-      color="primary"
-      @closeSnack="snackbarOpen = event"
-    />
-    <Confirm-Dialog
-      @confirmDelete="deleteItem(item)"
-      @dialogClose="dialogOpen = false"
-      :dialogOpen="dialogOpen"
-      :dialogHeadline="dialogHeadline"
-      :dialogText="dialogText"
-      :loading="loadingDelete"
-    />
     <New-User-Dialog
+      :dialogTitle="dialogTitle"
       :route="routeForDialog"
       :open="userDialog"
       :editedItem="editedItem"
@@ -68,8 +82,6 @@
 
 <script>
 import axios from "axios";
-import Snackbar from "./Snackbar";
-import ConfirmDialog from "./ConfirmDialog";
 import NewUserDialog from "./NewUserDialog";
 
 export default {
@@ -89,6 +101,7 @@ export default {
     search: String,
     loading: Boolean,
     isUsersTable: Boolean,
+    isEmailTable: Boolean,
     page: Number,
     perPage: Number,
     orderBy: String,
@@ -98,8 +111,6 @@ export default {
     companies: Array
   },
   components: {
-    Snackbar,
-    ConfirmDialog,
     NewUserDialog
   },
   data: () => ({
@@ -115,9 +126,7 @@ export default {
     item: {},
     userDialog: false,
     searchText: "",
-    formTitle: "Modal",
-    snackbarOpen: false,
-    snackbarText: "",
+    dialogTitle: "",
     dialogOpen: false,
     dialogHeadline: "",
     dialogText: "",
@@ -125,49 +134,27 @@ export default {
     loadingDelete: false,
     routeForDialog: {
       method: "",
-      endpoint: "d"
+      endpoint: ""
     }
   }),
   methods: {
     editItem(item) {
+      this.dialogTitle = "Edit User";
       this.editedIndex = this.items.indexOf(item);
       this.editedItem = Object.assign({}, item);
       if (!this.companiesForDialog.length) this.getCompanies();
       this.routeForDialog = {
         method: "put",
-        endpoint: `/users/${this.editedItem.id}`
+        endpoint: `/users/${this.editedItem._id}`
       };
       this.userDialog = true;
     },
-    openDialog(item) {
-      this.item = item;
-      this.dialogOpen = true;
-      this.dialogHeadline = "You are about to delete a user!";
-      this.dialogText = `Are you sure you want to delete the user ${item.name.first} ${item.name.last}, with email ${item.email}?`;
-    },
-    async deleteItem(item) {
-      console.log(item);
-      try {
-        this.loadingDelete = true;
-        const res = await axios.delete(`/users/${item._id}`);
-
-        if (res.data.success) {
-          this.dialogOpen = false;
-          const index = this.items.indexOf(item);
-          this.items.splice(index, 1);
-          this.snackbarText = `User ${item.name.first} ${item.name.last} deleted`;
-          this.snackbarOpen = true;
-        }
-      } catch (error) {
-        throw error;
-      }
-    },
-
     async openDialogNewUser() {
+      this.dialogTitle = "New User";
       if (!this.companiesForDialog.length) {
         this.getCompanies();
       }
-      this.routeForDialog = { method: "post", endpoint: `/users` };
+      this.routeForDialog = { method: "post", endpoint: `/auth/sign-up` };
       this.userDialog = true;
     },
 
@@ -193,12 +180,13 @@ export default {
         companyId: {},
         avatar: null
       };
-    },
-
-    async save() {}
-  },
-  mounted() {
-    console.log(this);
+    }
   }
 };
 </script>
+
+<style>
+.bg-gradient {
+  background: linear-gradient(to bottom right, #1374f2, #66a3f2);
+}
+</style>

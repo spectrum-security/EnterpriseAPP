@@ -2,7 +2,7 @@
   <v-dialog v-model="open" persistent max-width="500px">
     <v-card>
       <v-card-title>
-        <span class="headline primary--text">{{ formTitle }}</span>
+        <span class="headline primary--text">{{ dialogTitle }}</span>
       </v-card-title>
 
       <v-card-text>
@@ -39,29 +39,28 @@
                 outlined
                 :items="companies"
                 :item-text="el => el.name"
-                :item-value="el => el.id"
+                :item-value="el => el._id"
                 v-model="editedItem.companyId"
               ></v-select>
-              <!-- <v-text-field
-                full-width
+              <v-select
+                label="User Type"
                 dense
                 outlined
-                type="password"
-                v-model="editedItem.password"
-                label="Password"
-              ></v-text-field>-->
+                :items="userTypes"
+                :item-value="el => el.value"
+                :item-text="el => el.label"
+                v-model="editedItem.userType"
+              ></v-select>
               <v-file-input
                 dense
-                outlined
                 chips
                 show-size
-                v-model="editedItem.avatar"
-                accept="image/png, image/jpeg, image/bmp"
-                placeholder="Pick an avatar"
-                prepend-icon
+                outlined
                 prepend-inner-icon="fas fa-camera"
+                prepend-icon
+                accept="image/jpeg, image/png"
+                v-model="editedItem.avatar"
                 label="Avatar"
-                @change="logThis"
               ></v-file-input>
             </v-col>
           </v-row>
@@ -77,27 +76,52 @@
 </template>
 
 <script>
+import axios from "axios";
 export default {
   props: {
     open: Boolean,
-    formTitle: String,
+    dialogTitle: String,
     editedItem: Object,
     companies: Array,
     route: Object
   },
-  data: () => ({}),
+  data: () => ({
+    userTypes: [
+      { value: 1, label: "Admin" },
+      { value: 3, label: "Customer" }
+    ]
+  }),
   methods: {
-    save() {
+    async save() {
       try {
-        const fd = new FormData();
-        fd.append("image", this.editedItem.avatar, this.editedItem.avatar.name);
+        let uploadRes = null;
+        if (this.editedItem.avatar) {
+          const fd = new FormData();
+          fd.append(
+            "file",
+            this.editedItem.avatar,
+            this.editedItem.avatar.name
+          );
+          uploadRes = await axios.post("/file/upload/avatar", fd);
+        }
+        const method = this.route.method;
+        const res = await axios[method](this.route.endpoint, {
+          email: this.editedItem.email,
+          name: {
+            first: this.editedItem.name.first,
+            last: this.editedItem.name.last
+          },
+          companyId: this.editedItem.companyId,
+          userType: this.editedItem.userType,
+          avatar: uploadRes.data.fileId
+        });
+        if (res.data.success) {
+          this.open = false;
+          this.$emit("snackbarOpen", this.editedItem);
+        }
       } catch (error) {
         throw error;
       }
-    },
-    // for testing
-    logThis() {
-      console.log(this.editedItem);
     }
   }
 };

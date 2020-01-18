@@ -1,11 +1,16 @@
 <template>
   <v-app>
+    <Navbar v-if="$route.name !== 'login'" />
+    <Toolbar v-if="$route.name !== 'login'" :title="$route.name" />
     <router-view></router-view>
   </v-app>
 </template>
 
 <script>
 import axios from "axios";
+import { mapState } from "vuex";
+import Navbar from "./components/Navbar";
+import Toolbar from "./components/Toolbar";
 import { getJwt, clearJwt, clearUser, setUser } from "./utils/jwt";
 
 axios.defaults.baseURL = process.env.VUE_APP_BASE_URL;
@@ -13,7 +18,10 @@ axios.defaults.baseURL = process.env.VUE_APP_BASE_URL;
 export default {
   name: "App",
 
-  components: {},
+  components: {
+    Navbar,
+    Toolbar
+  },
 
   data: () => ({
     //
@@ -65,7 +73,9 @@ export default {
       }
     }
   },
-  computed: {},
+  computed: {
+    ...mapState["isAuthenticated"]
+  },
   async beforeMount() {
     try {
       await this.initAuth();
@@ -79,7 +89,7 @@ export default {
 <style lang="scss">
 @import "@/assets/scss/index.scss";
 .v-application {
-  background-color: #e3e8ee !important;
+  background-color: #f2f2f2 !important; //#e3e8ee alternative
 }
 
 .content {

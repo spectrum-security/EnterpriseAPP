@@ -21,10 +21,14 @@
 
       <v-card-text class="pt-0">
         <div class="title font-weight-light mb-2">{{ title }}</div>
-        <div class="subheading font-weight-light grey--text">{{ subheading }}</div>
+        <div class="subheading font-weight-light grey--text">
+          {{ subheading }}
+        </div>
         <v-divider class="my-2"></v-divider>
         <v-icon class="mr-2" small>fas fa-clock</v-icon>
-        <span class="caption grey--text font-weight-light">last registration 26 minutes ago</span>
+        <span class="caption grey--text font-weight-light"
+          >last registration 26 minutes ago</span
+        >
       </v-card-text>
     </v-card>
   </div>

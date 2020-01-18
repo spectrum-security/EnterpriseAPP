@@ -9,12 +9,7 @@
           <v-toolbar-title>{{ title }}</v-toolbar-title>
           <v-spacer></v-spacer>
           <v-toolbar-items>
-            <v-btn
-              :loading="loading"
-              dark
-              text
-              @click="$emit('save', {editorData, templateTitle, templateType})"
-            >Save</v-btn>
+            <v-btn :loading="loading" dark text @click="submit">Save</v-btn>
           </v-toolbar-items>
         </v-toolbar>
         <v-container>
@@ -43,15 +38,6 @@
             </v-col>
           </v-row>
         </v-container>
-        <!-- <editor-menu-bar :editor="editor" v-slot="{ commands, isActive }">
-              <v-btn
-                :class="{ 'is-active': isActive.bold() }"
-                @click="commands.bold"
-              >
-                Bold
-              </v-btn>
-            </editor-menu-bar>
-        <editor-content :editor="editor" />-->
       </v-card>
     </v-dialog>
   </v-row>
@@ -59,33 +45,47 @@
 
 <script>
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
+import axios from "axios";
+
 export default {
   props: {
     open: Boolean,
     title: String,
     editorData: String,
     templateTitle: String,
-    templateType: Object,
+    templateType: {},
     types: Array,
-    loading: Boolean
+    loading: Boolean,
+    route: {}
   },
   components: {},
   data: () => ({
     editor: ClassicEditor,
     editorConfig: {
       // config settings
-    }
+    },
+    loadingSave: false
   }),
-  watch: {
-    templateTitle() {
-      console.log(this.templateTitle);
-    },
-    templateType() {
-      console.log(this.templateType);
-    },
-    editorData() {
-      console.log(this.editorData);
-      console.log(this.headers);
+  methods: {
+    async submit() {
+      try {
+        console.log(this.route);
+        const method = this.route.method;
+        this.loadingSave = true;
+        await axios[method](this.route.endpoint, {
+          title: this.templateTitle,
+          type: this.templateType,
+          content: this.editorData
+        });
+
+        // do more stuff here
+        //
+
+        this.loadingSave = false;
+        this.open = false;
+      } catch (error) {
+        throw error.message;
+      }
     }
   }
 };
