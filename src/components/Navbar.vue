@@ -123,7 +123,8 @@ export default {
   },
   watch: {
     user() {
-      return (this.avatarSrc = `http://localhost:3000/files/image/${this.user.avatar}`);
+      return (this.avatarSrc =
+        process.env.VUE_APP_BASE_URL + `files/image/${this.user.avatar}`);
     }
   }
 };
