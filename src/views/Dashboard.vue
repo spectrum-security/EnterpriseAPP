@@ -27,9 +27,9 @@
             <Info-Card
               id="breaches-card"
               headline="Breaches"
-              text="Number of breaches"
-              :icon="logsIcon"
-              :numberOf="logsCount"
+              text="Received emails in last 7 days"
+              :icon="recEmailIcon"
+              :numberOf="recEmailCount"
               :loading="loading"
             />
           </v-col>
@@ -37,9 +37,9 @@
             <Info-Card
               id="breaches-card"
               headline="Breaches"
-              text="Number of breaches"
-              :icon="logsIcon"
-              :numberOf="logsCount"
+              text="Emails sent in last 7 days"
+              :icon="sentEmailIcon"
+              :numberOf="sentEmailCount"
               :loading="loading"
             />
           </v-col>
@@ -83,14 +83,25 @@ export default {
     loading: false,
     dateLabels: [],
     logValues: [],
+    userValues: [],
     logsIcon: {
       name: "fas fa-shield-alt",
       color: "white"
     },
     logsCount: null,
     usersCount: null,
+    recEmailCount: null,
+    sentEmailCount: null,
     usersIcon: {
       name: "fas fa-users",
+      color: "white"
+    },
+    recEmailIcon: {
+      name: "fas fa-inbox",
+      color: "white"
+    },
+    sentEmailIcon: {
+      name: "fas fa-paper-plane",
       color: "white"
     },
     lastLogRecord: "",
@@ -99,10 +110,10 @@ export default {
   async mounted() {
     this.loading = true;
     this.dateLabels = this.last7Days();
-    await this.createdUsersThisWeek();
-    // await this.getActiveSensors();
     await this.getThisWeeksLogs();
-    // await this.getProfits;
+    await this.createdUsersThisWeek();
+    await this.getReceivedEmailCount();
+    await this.sentEmailThisWeek();
     await this.getLogChartData();
     await this.getUsersChartData();
     this.loading = false;
@@ -112,6 +123,22 @@ export default {
       try {
         const res = await axios.get("/users/created/last_7_days");
         this.usersCount = res.data.totalRecords;
+      } catch (error) {
+        throw error;
+      }
+    },
+    async sentEmailThisWeek() {
+      try {
+        const res = await axios.get("/mail/last_7_days");
+        this.sentEmailCount = res.data.totalRecords;
+      } catch (error) {
+        throw error;
+      }
+    },
+    async getReceivedEmailCount() {
+      try {
+        const res = await axios.get("/rec_email/last_7_days");
+        this.recEmailCount = res.data.totalRecords;
       } catch (error) {
         throw error;
       }

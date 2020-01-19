@@ -19,7 +19,13 @@
       <template>
         <v-list-item two-line>
           <v-list-item-avatar>
-            <v-img v-if="user" :src="avatarSrc" :key="user.avatar" alt></v-img>
+            <v-img
+              v-if="user"
+              lazy-src="../assets/placeholder.jpg"
+              :src="avatarSrc"
+              :key="user.avatar"
+              alt
+            ></v-img>
           </v-list-item-avatar>
 
           <v-list-item-content>
@@ -59,7 +65,7 @@
             <v-list-item-title>Companies</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
-        <v-list-item :to="{ name: 'Surveillance' }" active-class="primary white--text rounded" link>
+        <!-- <v-list-item :to="{ name: 'Surveillance' }" active-class="primary white--text rounded" link>
           <v-list-item-icon>
             <v-icon small>fas fa-shield-alt</v-icon>
           </v-list-item-icon>
@@ -67,8 +73,7 @@
           <v-list-item-content>
             <v-list-item-title>Surveillance</v-list-item-title>
           </v-list-item-content>
-        </v-list-item>
-
+        </v-list-item>-->
         <v-list-item :to="{ name: 'Users' }" active-class="primary white--text rounded" link>
           <v-list-item-icon>
             <v-icon small>fas fa-users</v-icon>
