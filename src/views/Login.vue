@@ -92,7 +92,7 @@ export default {
               this.$store.dispatch("setLoggedUser", res.data.content.user);
               this.$store.dispatch("setIsAuthenticated", true);
               this.loading = false;
-              this.$router.push({ name: "dashboard" });
+              this.$router.push({ name: "Dashboard" });
             }
           })
           .catch(err => {

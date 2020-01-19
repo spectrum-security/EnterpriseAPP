@@ -112,7 +112,7 @@ export default {
         clearUser();
         clearJwt();
         this.$store.dispatch("setIsAuthenticated", false);
-        this.$router.push({ name: "login" });
+        this.$router.push({ name: "Login" });
       } catch (error) {
         throw error;
       }
