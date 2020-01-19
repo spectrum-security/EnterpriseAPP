@@ -1,6 +1,11 @@
 <template>
   <v-row justify="center">
-    <v-dialog v-model="open" fullscreen hide-overlay transition="dialog-bottom-transition">
+    <v-dialog
+      v-model="open"
+      fullscreen
+      hide-overlay
+      transition="dialog-bottom-transition"
+    >
       <v-card>
         <v-toolbar dark color="primary">
           <v-btn icon dark @click="$emit('closeDialog')">
@@ -15,7 +20,12 @@
         <v-container>
           <v-row class="mt-5">
             <v-col cols="6" md="6">
-              <v-text-field v-model="templateTitle" dense outlined label="Template Title"></v-text-field>
+              <v-text-field
+                v-model="templateTitle"
+                dense
+                outlined
+                label="Template Title"
+              ></v-text-field>
             </v-col>
             <v-col cols="6" md="6">
               <v-select
@@ -77,9 +87,6 @@ export default {
           type: this.templateType,
           content: this.editorData
         });
-
-        // do more stuff here
-        //
 
         this.loadingSave = false;
         this.open = false;
