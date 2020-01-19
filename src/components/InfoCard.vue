@@ -25,6 +25,6 @@ export default {
 
 <style>
 .gradient-card {
-  background: linear-gradient(to bottom right, #1374f2, #66a3f2);
+  background: linear-gradient(to bottom right, #66a3f2, #1374f2);
 }
 </style>
