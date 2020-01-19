@@ -10,6 +10,7 @@
         <v-sparkline
           :labels="labels"
           auto-draw
+          auto-draw-easing="ease"
           stroke-linecap="round"
           :value="value"
           color="white"
@@ -25,9 +26,9 @@
           {{ subheading }}
         </div>
         <v-divider class="my-2"></v-divider>
-        <v-icon class="mr-2" small>fas fa-clock</v-icon>
+        <v-icon class="mr-2" color="error" small>fas fa-clock</v-icon>
         <span class="caption grey--text font-weight-light"
-          >last registration 26 minutes ago</span
+          >last registered {{ calcDiff }} hours ago</span
         >
       </v-card-text>
     </v-card>
@@ -35,6 +36,7 @@
 </template>
 
 <script>
+import moment from "moment";
 export default {
   props: {
     title: {
@@ -48,11 +50,17 @@ export default {
     },
     value: {
       type: Array
-    }
+    },
+    lastOccurence: String
   },
   data: () => ({}),
-  mounted() {
-    console.log(this.labels);
+  computed: {
+    calcDiff() {
+      const today = moment();
+      const lastRecord = moment(this.lastOccurence);
+      const diff = today.diff(lastRecord, "hours");
+      return diff;
+    }
   }
 };
 </script>

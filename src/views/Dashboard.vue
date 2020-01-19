@@ -46,10 +46,20 @@
         </v-row>
         <v-row class="mt-5">
           <v-col cols="6">
-            <Graph title="Breaches in the last 7 days" :labels="dateLabels" :value="logValues" />
+            <Graph
+              title="Security Analysis"
+              :lastOccurence="lastLogRecord"
+              :labels="dateLabels"
+              :value="logValues"
+            />
           </v-col>
           <v-col cols="6">
-            <Graph title="Users" :labels="dateLabels" :value="logValues" />
+            <Graph
+              title="Users Analysis"
+              :lastOccurence="lastUserRecord"
+              :labels="dateLabels"
+              :value="userValues"
+            />
           </v-col>
         </v-row>
       </v-container>
@@ -82,7 +92,9 @@ export default {
     usersIcon: {
       name: "fas fa-users",
       color: "white"
-    }
+    },
+    lastLogRecord: "",
+    lastUserRecord: ""
   }),
   async mounted() {
     this.loading = true;
@@ -92,6 +104,7 @@ export default {
     await this.getThisWeeksLogs();
     // await this.getProfits;
     await this.getLogChartData();
+    await this.getUsersChartData();
     this.loading = false;
   },
   methods: {
@@ -115,7 +128,16 @@ export default {
       try {
         const res = await axios.get("/logs/analytics");
         this.logValues = res.data.content.range;
-        this.lastLogRecord = res.data.content.lastRecord;
+        this.lastLogRecord = res.data.content.lastRecord.createdAt;
+      } catch (error) {
+        throw error;
+      }
+    },
+    async getUsersChartData() {
+      try {
+        const res = await axios.get("/users/analytics");
+        this.userValues = res.data.content.range;
+        this.lastUserRecord = res.data.content.lastRecord.createdAt;
       } catch (error) {
         throw error;
       }

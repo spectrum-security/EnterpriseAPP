@@ -16,6 +16,7 @@
     "core-js": "^3.4.4",
     "dotenv": "^8.2.0",
     "lodash": "^4.17.15",
+    "moment": "^2.24.0",
     "tiptap": "^1.26.6",
     "tiptap-extensions": "^1.28.6",
     "vue": "^2.6.10",
