@@ -2,7 +2,13 @@
   <div class="home">
     <v-content class="content">
       <v-container>
-        <v-tabs class="elevation-2" v-model="tabs" color="primary" background-color="white" left>
+        <v-tabs
+          class="elevation-2"
+          v-model="tabs"
+          color="primary"
+          background-color="white"
+          left
+        >
           <v-tab>
             Email Settings
             <v-icon class="ml-3">fas fa-envelope</v-icon>
@@ -16,10 +22,14 @@
           <v-tab-item>
             <v-row align="center" no-gutters class="mb-0 pb-0">
               <v-col cols="6" md="6">
-                <v-card-title class="headline mb-2 pb-2">Template Emails</v-card-title>
+                <v-card-title class="headline mb-2 pb-2"
+                  >Template Emails</v-card-title
+                >
               </v-col>
               <v-col cols="6" md="6" class="text-right pr-8">
-                <v-btn color="primary--text" @click="handleOpenDialog">New Template</v-btn>
+                <v-btn color="primary--text" @click="handleOpenDialog(null)"
+                  >New Template</v-btn
+                >
               </v-col>
             </v-row>
             <v-row>
@@ -36,7 +46,7 @@
                   :totalRecords="totalRecords"
                   searchLabel="Search Templates"
                   @openDeleteConfirm="openDialog($event)"
-                  @openFullscreen="handleOpenDialog($event)"
+                  @openFullscreen="handleOpenDialog(item)"
                   @search="searchTemplates($event)"
                   @pageUpdate="pageUpdate($event)"
                   @perPageUpdate="perPageUpdate($event)"
@@ -62,7 +72,7 @@
         :loading="loadingSave"
         title="Create New Template"
         @closeDialog="closeDialog"
-        @save="saveTemplate($event)"
+        @getTemplates="getTemplates"
       />
       <Confirm-Dialog
         @confirmDelete="deleteItem(item)"
@@ -139,6 +149,7 @@ export default {
           const res = await axios.get("/mail/types");
           this.types = res.data.content.types;
         }
+        console.log(item);
         if (item) {
           this.editorData = item.content;
           this.editEmailTitle = item.title;
@@ -200,10 +211,12 @@ export default {
           this.dialogOpen = false;
           const index = this.templates.indexOf(item);
           this.templates.splice(index, 1);
-          this.snackbarText = `User ${item.name.first} ${item.name.last} deleted`;
+          this.snackbarText = `Template ${item.title} deleted`;
           this.snackbarOpen = true;
+          this.loadingDelete = false;
         }
       } catch (error) {
+        this.loadingDelete = false;
         throw error;
       }
     },
