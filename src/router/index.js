@@ -4,6 +4,7 @@ import Dashboard from "../views/Dashboard.vue";
 import Surveillance from "../views/Surveillance.vue";
 import Settings from "../views/Settings.vue";
 import Companies from "../views/Companies.vue";
+import CompanyDetails from "../views/CompanyDetails.vue";
 import Login from "../views/Login.vue";
 import Users from "../views/Users.vue";
 
@@ -31,9 +32,23 @@ const routes = [
     path: "/companies",
     name: "Companies",
     component: Companies,
+    // children:[{
+    //   path: ":id",
+    //   name: "companyDetails",
+    //   component: CompanyDetails,
+    // }],
     meta: {
       requiresAuth: true,
-      title: "Companies"
+      isAdmin: true
+    }
+  },
+  {
+    path: "/companies/:id",
+    name: "Companies",
+    component: CompanyDetails,
+    meta: {
+      requiresAuth: true,
+      isAdmin: true
     }
   },
   {
