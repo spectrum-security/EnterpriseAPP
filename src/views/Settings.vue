@@ -2,34 +2,22 @@
   <div class="home">
     <v-content class="content">
       <v-container>
-        <v-tabs
-          class="elevation-2"
-          v-model="tabs"
-          color="primary"
-          background-color="white"
-          left
-        >
+        <v-tabs class="elevation-2" v-model="tabs" color="primary" background-color="white" left>
           <v-tab>
-            Email Settings
+            Template Emails
             <v-icon class="ml-3">fas fa-envelope</v-icon>
           </v-tab>
           <v-tab>
-            Payment Settings
-            <v-icon class="ml-3">fas fa-credit-card</v-icon>
+            IMAP Settings
+            <v-icon class="ml-3">fas fa-inbox</v-icon>
           </v-tab>
         </v-tabs>
         <v-tabs-items class="elevation-2" v-model="tabs">
           <v-tab-item>
             <v-row align="center" no-gutters class="mb-0 pb-0">
-              <v-col cols="6" md="6">
-                <v-card-title class="headline mb-2 pb-2"
-                  >Template Emails</v-card-title
-                >
-              </v-col>
+              <v-col cols="6" md="6"></v-col>
               <v-col cols="6" md="6" class="text-right pr-8">
-                <v-btn color="primary--text" @click="handleOpenDialog(null)"
-                  >New Template</v-btn
-                >
+                <v-btn color="primary--text" @click="handleOpenDialog(null)">New Template</v-btn>
               </v-col>
             </v-row>
             <v-row>
@@ -46,7 +34,7 @@
                   :totalRecords="totalRecords"
                   searchLabel="Search Templates"
                   @openDeleteConfirm="openDialog($event)"
-                  @openFullscreen="handleOpenDialog(item)"
+                  @openFullscreen="handleOpenDialog($event)"
                   @search="searchTemplates($event)"
                   @pageUpdate="pageUpdate($event)"
                   @perPageUpdate="perPageUpdate($event)"
@@ -57,8 +45,39 @@
             </v-row>
           </v-tab-item>
           <v-tab-item>
-            <v-card-title class="headline">Payment Methods</v-card-title>
-            <v-card-text></v-card-text>
+            <v-row justify="center" align="center">
+              <v-col cols="12" md="5" class="mt-10">
+                <v-text-field dense outlined label="User" v-model="imapUser" />
+              </v-col>
+              <v-col cols="12" md="5" class="mt-10">
+                <v-text-field
+                  type="password"
+                  dense
+                  outlined
+                  label="Password"
+                  v-model="imapPassword"
+                />
+              </v-col>
+            </v-row>
+            <v-row justify="center" align="center">
+              <v-col cols="12" md="5">
+                <v-text-field dense outlined label="Host" v-model="imapHost" />
+              </v-col>
+              <v-col cols="12" md="3">
+                <v-text-field dense outlined label="Port" v-model="imapPort" />
+              </v-col>
+              <v-col cols="12" md="2">
+                <v-checkbox dense label="TLS" v-model="imapTls"></v-checkbox>
+              </v-col>
+              <v-col cols="12" md="10" class="text-right">
+                <v-btn
+                  @click="saveImapSettings"
+                  color="primary"
+                  min-width="200"
+                  class="elevation-1 mb-10"
+                >Save</v-btn>
+              </v-col>
+            </v-row>
           </v-tab-item>
         </v-tabs-items>
       </v-container>
@@ -140,9 +159,28 @@ export default {
     routeForFullscreen: {
       endpoint: "",
       method: ""
-    }
+    },
+    imapUser: "",
+    imapPassword: "",
+    imapHost: "",
+    imapPort: "",
+    imapTls: false
   }),
   methods: {
+    async saveImapSettings() {
+      try {
+        const res = await axios.post("/rec_email", {
+          user: this.imapUser,
+          password: this.imapPassword,
+          host: this.imapHost,
+          port: this.imapPort,
+          tls: this.imapTls
+        });
+        console.log(res);
+      } catch (error) {
+        throw error;
+      }
+    },
     async handleOpenDialog(item) {
       try {
         if (!this.types.length) {

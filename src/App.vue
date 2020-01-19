@@ -1,7 +1,7 @@
 <template>
   <v-app>
-    <Navbar v-if="$route.name !== 'login'" />
-    <Toolbar v-if="$route.name !== 'login'" :title="$route.name" />
+    <Navbar v-if="$route.name !== 'Login'" />
+    <Toolbar v-if="$route.name !== 'Login'" :title="$route.name" />
     <router-view></router-view>
   </v-app>
 </template>
