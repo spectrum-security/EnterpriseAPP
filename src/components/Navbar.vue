@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-navigation-drawer absolute permanent class="menu">
+    <v-navigation-drawer app fixed permanent class="menu">
       <template>
         <v-list-item two-line>
           <v-list-item-content>
@@ -49,7 +49,7 @@
           link
         >
           <v-list-item-icon>
-            <v-icon small>fas fa-tachometer-alt</v-icon>
+            <v-icon small>fas fa-th-large</v-icon>
           </v-list-item-icon>
 
           <v-list-item-content>

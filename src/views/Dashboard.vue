@@ -62,6 +62,29 @@
             />
           </v-col>
         </v-row>
+        <v-row justify="center" class="mt-5">
+          <v-col cols="12" md="12">
+            <Data-Table
+              class="elevation-4"
+              title="Inbox"
+              :headers="headers"
+              :items="inboxItems"
+              :loading="loading"
+              :isUsersTable="false"
+              :page="page"
+              :perPage="perPage"
+              :totalRecords="inboxTotalRecords"
+              searchLabel="Search Inbox"
+              @snackbarOpen="openSnackbar($event)"
+              @openDeleteConfirm="openDialog($event)"
+              @search="searchUsers($event)"
+              @pageUpdate="pageUpdate($event)"
+              @perPageUpdate="perPageUpdate($event)"
+              @orderByUpdate="orderByUpdate($event)"
+              @orderTypeUpdate="orderTypeUpdate($event)"
+            />
+          </v-col>
+        </v-row>
       </v-container>
     </v-content>
   </div>
@@ -71,13 +94,15 @@
 // @ is an alias to /src
 import Graph from "../components/Graph";
 import InfoCard from "../components/InfoCard";
+import DataTable from "../components/DataTable";
 import axios from "axios";
 
 export default {
   name: "home",
   components: {
     Graph,
-    InfoCard
+    InfoCard,
+    DataTable
   },
   data: () => ({
     loading: false,
@@ -105,7 +130,18 @@ export default {
       color: "white"
     },
     lastLogRecord: "",
-    lastUserRecord: ""
+    lastUserRecord: "",
+    headers: [
+      { text: "From", value: "" },
+      { text: "Type", value: "type" },
+      { text: "Actions", value: "action", sortable: false }
+    ],
+    inboxItems: [],
+    inboxTotalRecords: 0,
+    page: 1,
+    perPage: 10,
+    orderBy: "createdAt",
+    orderType: "asc"
   }),
   async mounted() {
     this.loading = true;
@@ -116,9 +152,26 @@ export default {
     await this.sentEmailThisWeek();
     await this.getLogChartData();
     await this.getUsersChartData();
+    await this.getInbox();
     this.loading = false;
   },
   methods: {
+    async getInbox() {
+      try {
+        const res = await axios.get("/rec_email/inbox", {
+          params: {
+            page: this.page,
+            perPage: this.perPage,
+            orderBy: this.orderBy,
+            orderType: this.orderType
+          }
+        });
+        this.inboxItems = res.data.content.inbox;
+        this.inboxTotalRecords = res.data.totalRecords;
+      } catch (error) {
+        throw error;
+      }
+    },
     async createdUsersThisWeek() {
       try {
         const res = await axios.get("/users/created/last_7_days");
@@ -168,6 +221,22 @@ export default {
       } catch (error) {
         throw error;
       }
+    },
+    pageUpdate(event) {
+      this.page = event;
+      this.getInbox();
+    },
+    perPageUpdate(event) {
+      this.perPage = event;
+      this.getInbox();
+    },
+    orderByUpdate(event) {
+      this.orderBy = event[0];
+      this.getInbox();
+    },
+    orderTypeUpdate(event) {
+      event[0] === true ? (this.orderType = "desc") : (this.orderType = "asc");
+      this.getInbox();
     },
     formatDate(date) {
       var dd = date.getDate();

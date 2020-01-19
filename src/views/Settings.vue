@@ -11,6 +11,10 @@
             IMAP Settings
             <v-icon class="ml-3">fas fa-inbox</v-icon>
           </v-tab>
+          <v-tab>
+            Blacklist
+            <v-icon class="ml-3">fas fa-user-secret</v-icon>
+          </v-tab>
         </v-tabs>
         <v-tabs-items class="elevation-2" v-model="tabs">
           <v-tab-item>
@@ -71,6 +75,12 @@
               </v-col>
               <v-col cols="12" md="10" class="text-right">
                 <v-btn
+                  @click="deleteCurrentImap"
+                  color="error"
+                  min-width="200"
+                  class="mb-10 mx-5"
+                >Delete Current</v-btn>
+                <v-btn
                   @click="saveImapSettings"
                   color="primary"
                   min-width="200"
@@ -79,6 +89,7 @@
               </v-col>
             </v-row>
           </v-tab-item>
+          <v-tab-item>hey</v-tab-item>
         </v-tabs-items>
       </v-container>
       <Full-Dialog
@@ -104,7 +115,7 @@
       <Snackbar
         :open="snackbarOpen"
         :text="snackbarText"
-        color="primary"
+        :color="snackbarColor"
         @closeSnack="snackbarOpen = event"
       />
     </v-content>
@@ -160,6 +171,7 @@ export default {
       endpoint: "",
       method: ""
     },
+    snackbarColor: "primary",
     imapUser: "",
     imapPassword: "",
     imapHost: "",
@@ -177,6 +189,28 @@ export default {
           tls: this.imapTls
         });
         console.log(res);
+      } catch (error) {
+        throw error;
+      }
+    },
+    async deleteCurrentImap() {
+      try {
+        this.loadingDelete = true;
+        // const res = await axios.delete("/rec_email");
+        const res = {
+          data: {
+            success: true,
+            message: "hey"
+          }
+        };
+        if (res.data.success) {
+          this.snackbarText = res.data.message;
+          this.snackbarOpen = true;
+        } else {
+          this.snackbarText = res.data.message;
+          this.snackbarColor = "error";
+          this.snackbarOpen = true;
+        }
       } catch (error) {
         throw error;
       }
