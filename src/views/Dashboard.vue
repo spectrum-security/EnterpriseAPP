@@ -65,8 +65,9 @@
         <v-row justify="center" class="mt-5">
           <v-col cols="12" md="12">
             <Data-Table
-              class="elevation-4"
+              class="elevation-4 mb-10"
               title="Inbox"
+              :hasViewIcon="true"
               :headers="headers"
               :items="inboxItems"
               :loading="loading"
@@ -75,6 +76,7 @@
               :perPage="perPage"
               :totalRecords="inboxTotalRecords"
               searchLabel="Search Inbox"
+              @viewItem="openViewMail($event)"
               @snackbarOpen="openSnackbar($event)"
               @openDeleteConfirm="openDialog($event)"
               @search="searchUsers($event)"
@@ -85,6 +87,7 @@
             />
           </v-col>
         </v-row>
+        <Mail-View :open="viewMailDialog" :item="mailItem" />
       </v-container>
     </v-content>
   </div>
@@ -95,6 +98,7 @@
 import Graph from "../components/Graph";
 import InfoCard from "../components/InfoCard";
 import DataTable from "../components/DataTable";
+import MailView from "../components/MailView";
 import axios from "axios";
 
 export default {
@@ -102,7 +106,8 @@ export default {
   components: {
     Graph,
     InfoCard,
-    DataTable
+    DataTable,
+    MailView
   },
   data: () => ({
     loading: false,
@@ -132,8 +137,8 @@ export default {
     lastLogRecord: "",
     lastUserRecord: "",
     headers: [
-      { text: "From", value: "" },
-      { text: "Type", value: "type" },
+      { text: "From", value: "email" },
+      { text: "Subject", value: "title" },
       { text: "Actions", value: "action", sortable: false }
     ],
     inboxItems: [],
@@ -141,7 +146,9 @@ export default {
     page: 1,
     perPage: 10,
     orderBy: "createdAt",
-    orderType: "asc"
+    orderType: "asc",
+    viewMailDialog: false,
+    mailItem: {}
   }),
   async mounted() {
     this.loading = true;
@@ -156,6 +163,16 @@ export default {
     this.loading = false;
   },
   methods: {
+    openViewMail(item) {
+      console.log(item);
+      this.mailItem = {
+        title: item.title,
+        email: item.email,
+        text: item.text
+      };
+      this.viewMailDialog = true;
+      console.log("stoped here");
+    },
     async getInbox() {
       try {
         const res = await axios.get("/rec_email/inbox", {

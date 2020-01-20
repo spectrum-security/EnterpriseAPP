@@ -48,6 +48,13 @@
           class="mr-2"
           @click="$emit('openFullscreen',item)"
         >fas fa-edit</v-icon>
+        <v-icon
+          small
+          color="primary"
+          class="mr-2"
+          v-if="hasViewIcon"
+          @click="$emit('viewItem', item)"
+        >fas fa-eye</v-icon>
         <v-icon small color="error" @click="$emit('openDeleteConfirm', item)">fas fa-trash</v-icon>
       </template>
       <template v-slot:no-data>
@@ -109,7 +116,8 @@ export default {
     orderType: String,
     totalRecords: Number,
     searchLabel: String,
-    companies: Array
+    companies: Array,
+    hasViewIcon: Boolean
   },
   components: {
     NewUserDialog
