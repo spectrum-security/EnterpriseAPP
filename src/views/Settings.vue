@@ -20,7 +20,7 @@
           <v-tab-item>
             <v-row align="center" no-gutters class="mb-0 pb-0">
               <v-col cols="6" md="6"></v-col>
-              <v-col cols="6" md="6" class="text-right pr-8">
+              <v-col cols="6" md="6" class="text-right pr-8 mt-4">
                 <v-btn color="primary--text" @click="handleOpenDialog(null)">New Template</v-btn>
               </v-col>
             </v-row>
