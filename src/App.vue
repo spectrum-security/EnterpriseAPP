@@ -95,4 +95,8 @@ export default {
 .content {
   padding: 75px 0px 0px 260px !important;
 }
+
+pre {
+  font-family: Arial, Helvetica, sans-serif !important;
+}
 </style>
