@@ -79,7 +79,7 @@
               @viewItem="openViewMail($event)"
               @snackbarOpen="openSnackbar($event)"
               @openDeleteConfirm="openDialog($event)"
-              @search="searchUsers($event)"
+              @search="search($event)"
               @pageUpdate="pageUpdate($event)"
               @perPageUpdate="perPageUpdate($event)"
               @orderByUpdate="orderByUpdate($event)"
@@ -87,7 +87,7 @@
             />
           </v-col>
         </v-row>
-        <Mail-View :open="viewMailDialog" :item="mailItem" />
+        <Mail-View @close="viewMailDialog = false" :open="viewMailDialog" :item="mailItem" />
       </v-container>
     </v-content>
   </div>
@@ -237,6 +237,22 @@ export default {
         this.lastUserRecord = res.data.content.lastRecord.createdAt;
       } catch (error) {
         throw error;
+      }
+    },
+    async search(searchText) {
+      try {
+        this.loading = true;
+        const res = await axios.get("/rec_email/inbox", {
+          params: {
+            search: searchText
+          }
+        });
+        this.inboxItems = res.data.content.inbox;
+        this.totalrecords = res.data.totalRecords;
+        this.loading = false;
+      } catch (err) {
+        this.loading = false;
+        throw err;
       }
     },
     pageUpdate(event) {

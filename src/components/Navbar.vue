@@ -65,7 +65,7 @@
             <v-list-item-title>Companies</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
-        <!-- <v-list-item :to="{ name: 'Surveillance' }" active-class="primary white--text rounded" link>
+        <v-list-item :to="{ name: 'Surveillance' }" active-class="primary white--text rounded" link>
           <v-list-item-icon>
             <v-icon small>fas fa-shield-alt</v-icon>
           </v-list-item-icon>
@@ -73,7 +73,7 @@
           <v-list-item-content>
             <v-list-item-title>Surveillance</v-list-item-title>
           </v-list-item-content>
-        </v-list-item>-->
+        </v-list-item>
         <v-list-item :to="{ name: 'Users' }" active-class="primary white--text rounded" link>
           <v-list-item-icon>
             <v-icon small>fas fa-users</v-icon>

@@ -7,7 +7,7 @@
       </v-list-item-content>
 
       <v-list-item-avatar tile size="80">
-        <v-img lazy-src="../assets/LogoSDAzul.png" :src="generateUrl"></v-img>
+        <v-img :src="generateUrl" lazy-src="../assets/LogoSDAzul.png"></v-img>
       </v-list-item-avatar>
     </v-list-item>
 
@@ -25,7 +25,7 @@ export default {
   },
   computed: {
     generateUrl() {
-      return process.env.VUE_APP_BASE_URL + `/file/image/${this.company.image}`;
+      return process.env.VUE_APP_BASE_URL + `files/image/${this.company.image}`;
     }
   }
 };

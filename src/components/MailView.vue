@@ -1,6 +1,6 @@
 <template>
   <v-row justify="center">
-    <v-dialog v-model="open" max-width="700">
+    <v-dialog @click:outside="$emit('close', $event)" v-model="open" max-width="500">
       <v-card>
         <v-card-title class="headline mb-5" v-if="item">{{item.title}}</v-card-title>
         <v-card-subtitle>
