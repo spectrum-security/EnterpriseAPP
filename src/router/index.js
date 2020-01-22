@@ -6,6 +6,8 @@ import Settings from "../views/Settings.vue";
 import Companies from "../views/Companies.vue";
 import Login from "../views/Login.vue";
 import Users from "../views/Users.vue";
+import CompanyPage from "../views/CompanyPage";
+import NewCompany from "../views/NewCompany";
 
 Vue.use(VueRouter);
 
@@ -34,6 +36,23 @@ const routes = [
     meta: {
       requiresAuth: true,
       title: "Companies"
+    }
+  },
+  {
+    path: "/companies/:id",
+    name: "Company Page",
+    component: CompanyPage,
+    meta: {
+      title: "Company"
+    },
+    props: true
+  },
+  {
+    path: "/companies/add_new",
+    name: "Add Company",
+    component: NewCompany,
+    meta: {
+      title: "Add Company"
     }
   },
   {
