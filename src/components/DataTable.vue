@@ -139,7 +139,7 @@ export default {
     dialogOpen: false,
     dialogHeadline: "",
     dialogText: "",
-    companiesForDialog: [],
+    companiesForDialog: null,
     loadingDelete: false,
     routeForDialog: {
       method: "",
@@ -155,7 +155,7 @@ export default {
       this.dialogTitle = "Edit User";
       this.editedIndex = this.items.indexOf(item);
       this.editedItem = Object.assign({}, item);
-      if (!this.companiesForDialog.length) this.getCompanies();
+      if (!this.companiesForDialog) this.getCompanies();
       this.routeForDialog = {
         method: "put",
         endpoint: `/users/${this.editedItem._id}`
@@ -164,7 +164,7 @@ export default {
     },
     async openDialogNewUser() {
       this.dialogTitle = "New User";
-      if (!this.companiesForDialog.length) {
+      if (!this.companiesForDialog) {
         this.getCompanies();
       }
       this.routeForDialog = { method: "post", endpoint: `/auth/sign-up` };
@@ -174,7 +174,7 @@ export default {
     async getCompanies() {
       try {
         const res = await axios.get("/companies");
-        this.companiesForDialog = res.data.company;
+        this.companiesForDialog = res.data.content.companies;
       } catch (error) {
         throw error;
       }

@@ -2,7 +2,14 @@
   <div class="home">
     <v-content class="content">
       <v-container>
-        <Data-Table class="elevation-3" title="List of Logs" :loading="loading" :headers="headers" :items="logs" />
+        <Data-Table
+          class="elevation-3"
+          searchLabel="Search Logs"
+          title="List of Logs"
+          :loading="loading"
+          :headers="headers"
+          :items="logs"
+        />
       </v-container>
     </v-content>
   </div>

@@ -3,7 +3,7 @@
     <v-list-item three-line>
       <v-list-item-content>
         <v-list-item-title class="headline mb-1">{{company.name}}</v-list-item-title>
-        <v-list-item-subtitle></v-list-item-subtitle>
+        <v-list-item-subtitle>Admin: {{company.mainAdmin.email}}</v-list-item-subtitle>
       </v-list-item-content>
 
       <v-list-item-avatar tile size="80">
@@ -12,8 +12,7 @@
     </v-list-item>
 
     <v-card-actions class="ml-3">
-      <v-btn text>Button</v-btn>
-      <v-btn text>Button</v-btn>
+      <v-btn text color="primary" link :to="{ name: 'Company Page', params:{id: company._id} }">View</v-btn>
     </v-card-actions>
   </v-card>
 </template>

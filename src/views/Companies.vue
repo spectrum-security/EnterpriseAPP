@@ -16,7 +16,7 @@
             </v-form>
           </v-col>
           <v-col cols="12" md="2">
-            <v-btn class="ml-5" color="primary">
+            <v-btn class="ml-5" color="primary" :to="{ name: 'Add Company' }" link>
               <v-icon small class="mr-2">fas fa-plus</v-icon>New Company
             </v-btn>
           </v-col>
@@ -30,7 +30,7 @@
               :length="paginationLength"
             />
           </v-col>
-          <v-col cols="12" md="6" v-for="(company, index) in companies" :key="index">
+          <v-col cols="12" md="4" v-for="(company, index) in companies" :key="index">
             <Company-Card :company="company" />
           </v-col>
         </v-row>
